@@ -1,9 +1,7 @@
 # INNO三生三世--基金产品商城网站
 
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+{本项目的目标是：本网站专注于基金类产品的服务提供，帮助基金小白轻松实现基金的购买和管理，为有经验者提供丰富的市场信息，力争将商城网站打造成为领航基金发展的佼佼者。如果要访问本网站，请使用链接：https://gitee.com/inno-sansheng-iii-team/inno-e-commerce-mall}
 
 #### 软件架构
 软件架构说明
