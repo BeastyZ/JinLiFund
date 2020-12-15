@@ -1,4 +1,4 @@
-package administrator;
+package utils;
 /*
  * 管理员实体类
  */

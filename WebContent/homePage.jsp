@@ -13,8 +13,10 @@
 	<!-- 导航栏 -->
 	<%@ include file="/templates/navigationBar.jsp" %>
 
-	<div class="container">
-		
-	</div>
+	<!-- 主体内容部分 -->
+	<%@ include file="/templates/content.jsp" %>
+	
+	<!-- 脚部部分 -->
+	<%@ include file="/templates/footer.jsp" %>
 </body>
 </html>
