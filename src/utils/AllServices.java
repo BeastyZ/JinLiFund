@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -310,7 +309,52 @@ public class AllServices {
 			e1.printStackTrace();
 		}
 	}
-	
-	
 
+	// 加载所有基金公司的信息
+	public static List<FundCompany> loadAllFundComInfo(int pageNo) {
+
+		Connection conn = null;
+		List<FundCompany> fundCompanies = null;
+
+		try {
+			conn = getDBConnection();// 建立数据库连接
+			QueryRunner runner = new QueryRunner();// QueryRunner DbUtils核心类，JavaBean
+
+			String sqlStatement = "SELECT * FROM t_fundcompany order by id limit " + ((pageNo - 1) * 10) + ", 10";
+
+			fundCompanies = runner.query(conn, sqlStatement, new BeanListHandler<FundCompany>(FundCompany.class));
+
+			DbUtils.closeQuietly(conn);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return fundCompanies;
+	}
+
+	// 统计表中的数据
+	public static int countRec(String tableName) {
+
+		Connection conn = null;
+		DBRecCounterDto res = null;
+
+		try {
+			conn = getDBConnection();// 建立数据库连接
+			QueryRunner runner = new QueryRunner();// QueryRunner DbUtils核心类，JavaBean
+			
+			String sqlStatement = "SELECT COUNT(*) as count from " + tableName;
+
+			res = runner.query(conn, sqlStatement, new BeanHandler<DBRecCounterDto>(DBRecCounterDto.class));
+
+			DbUtils.closeQuietly(conn);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return res.getCount();
+	}
+
+	
 }

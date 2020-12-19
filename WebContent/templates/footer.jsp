@@ -36,10 +36,10 @@
 			<div class="col-6 col-md">
 				<h5>优秀基金</h5>
 				<ul class="list-unstyled text-small">
-					<li><a class="text-muted" href="#">先锋量化</a></li>
-					<li><a class="text-muted" href="#">交银新回</a></li>
-					<li><a class="text-muted" href="#">光大保德</a></li>
-					<li><a class="text-muted" href="#">光大保德</a></li>
+					<li><a class="text-muted" href="#" target="_blank">先锋量化</a></li>
+					<li><a class="text-muted" href="#" target="_blank">交银新回</a></li>
+					<li><a class="text-muted" href="#" target="_blank">光大保德</a></li>
+					<li><a class="text-muted" href="#" target="_blank">光大保德</a></li>
 				</ul>
 			</div>
 			<div class="col-6 col-md">
@@ -55,9 +55,9 @@
 				<h5>关于</h5>
 				<ul class="list-unstyled text-small">
 					<li><a class="text-muted" href="${pageContext.request.contextPath}/jsp/team.jsp" target="_blank">团队</a></li>
-					<li><a class="text-muted" href="https://www.zufe.edu.cn/">浙江财经大学</a></li>
-					<li><a class="text-muted" href="#" data-toggle="modal" data-target="#privacyModal">隐私</a></li>
-					<li><a class="text-muted" href="#" data-toggle="modal" data-target="#onlineTradingProtocolModalLong">条款</a></li>
+					<li><a class="text-muted" href="https://www.zufe.edu.cn/" target="_blank">浙江财经大学</a></li>
+					<li><a class="text-muted" href="#" data-toggle="modal" data-target="#privacyModal" target="_blank">隐私</a></li>
+					<li><a class="text-muted" href="#" data-toggle="modal" data-target="#onlineTradingProtocolModalLong" target="_blank">条款</a></li>
 				</ul>
 			</div>
 		</div>
