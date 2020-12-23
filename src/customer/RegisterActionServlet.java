@@ -41,19 +41,15 @@ public class RegisterActionServlet extends HttpServlet {
 
 		try {
 			AllServices.addCustomer(cusPhone, password);
+			PrintWriter out = response.getWriter();
+			out.write("success");
+			out.flush();
+			out.close();
 		} catch (SQLException e) {
-			boolean statusRes = AllServices.verifyCusStatus(cusPhone);
-			if(statusRes) {
-				session.removeAttribute("cusPhone");
-				session.setAttribute("cusPhone", cusPhone + "(已开户)");
-			}
 			PrintWriter out = response.getWriter();
 			out.write("该用户已存在，可直接登录！");
 			out.flush();
 			out.close();
-			
-			String ipAddr = request.getLocalAddr();
-			AllServices.addLog(cusPhone, ipAddr); // 登录记录
 		}
 	}
 

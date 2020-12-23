@@ -49,17 +49,21 @@ public class OpenAccountServlet extends HttpServlet {
 			// 向数据库写入姓名 身份证 银行卡号 照片
 			// 如果用户上传了图片
 			if(openAccPhoto.getSubmittedFileName() != "") {
+				
 				String proPath = this.getServletContext().getRealPath("/"); // 获取项目实际物理地址
 				String photoUploadPath = proPath + "images" +  File.separator + "profiles" + File.separator; // 图片实际上传地址
 				openAccPhoto.write(photoUploadPath + openAccTel); // 保存到指定路径下
+				String photoName =  openAccTel + openAccPhoto.getSubmittedFileName().substring(openAccPhoto.getSubmittedFileName().length() - 4, openAccPhoto.getSubmittedFileName().length());
 				
-				//写入数据库
-				AllServices.saveOpenAccInfo(openAccTel, openAccName, openAccIDNum, openAccCCNum, openAccTel);
+				//写入数据库 并以手机号命名图片
+				AllServices.saveOpenAccInfo(openAccTel, openAccName, openAccIDNum, openAccCCNum, photoName);
 			}
 			else {
 				//写入数据库
 				AllServices.saveOpenAccInfo(openAccTel, openAccName, openAccIDNum, openAccCCNum, "");
 			}
+			HttpSession session = request.getSession();
+			session.setAttribute("cusPhone", openAccTel + "(已开户)");
 			
 			request.getRequestDispatcher("/homePage.jsp").forward(request, response);
 		}

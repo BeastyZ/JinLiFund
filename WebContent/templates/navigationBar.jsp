@@ -20,7 +20,8 @@
 						function() {
 								$.post("${pageContext.request.contextPath}/customer/LogoutActionServlet", null, 
 										function(){
-									alert("退出登录成功！");
+									alert("退出登录成功！")
+									location.reload()
 								});
 								$("#logoutStatus").attr("style", "display:block;");
 								$("#loginStatus").attr("style", "display:none;");
@@ -51,17 +52,10 @@
 														password : password
 													},
 													function(data) {
-														$("#logoutStatus")
-																.attr("style",
-																		"display:none;");
-														$("#loginStatus")
-																.attr("style",
-																		"display:block;");
-														$("#loginStatus").attr(
-																"style",
-																"color:white;");
-
-														if (data != null)
+														if (data = "success")
+															alert("注册成功！");
+														
+														else
 															alert(data);
 													});
 								} else {
@@ -127,6 +121,8 @@
 																"style",
 																"color:white;");
 														$("#cusPhone").html(telephone);
+														
+														location.reload();
 															}
 												});
 							}
@@ -141,8 +137,9 @@
 	
 	// 页面刷新就执行
 	$(document).ready(function(){
-		var cusPhone = '<%=session.getAttribute("cusPhone")%>';
-		if(cusPhone != "null"){
+<%-- 		var cusPhone = '<%=session.getAttribute("cusPhone")%>'; --%>
+		var cusPhone = '${cusPhone}';
+		if(cusPhone != ""){
 			$("#logoutStatus")
 			.attr("style",
 							"display:none;");
@@ -182,16 +179,14 @@
 
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active"><a class="nav-link" href="#">自选基金</a></li>
-			<li class="nav-item active"><a class="nav-link" href="#">基金市场</a></li>
+			<li class="nav-item active"><a class="nav-link" href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-selfchosen" target="_blank">自选基金</a></li>
+			<li class="nav-item active"><a class="nav-link" href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-fund-ranking" target="_blank">基金市场</a></li>
 			<li class="nav-item dropdown"><a
 				class="nav-link dropdown-toggle active" href="#" id="navbarDropdown"
 				role="button" data-toggle="dropdown" aria-haspopup="true"
 				aria-expanded="false">基金交易</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="#">我的基金</a> <a class="dropdown-item"
-						href="#">我的定投</a>
-					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">我的基金</a> 
 					<a class="dropdown-item"
 						href="${pageContext.request.contextPath}/jsp/openAccount.jsp"
 						target="_blank">免费开户</a>
@@ -208,7 +203,7 @@
 			<button type="button" class="btn btn-light" data-toggle="modal"
 				data-target="#registerModalCenter">注册</button>
 
-			<a target="_blank" href="jsp/resetPassword.jsp"
+			<a target="_blank" href="${pageContext.request.contextPath}/jsp/resetPassword.jsp"
 				style="color: white; margin-left: 20px">忘记密码?</a>
 		</div>
 

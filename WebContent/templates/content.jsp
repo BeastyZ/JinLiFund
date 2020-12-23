@@ -19,19 +19,146 @@
 <script type="text/javascript">
 
 // 页面刷新就执行，显示初始的基金公司列表
-$(document).ready(function(){
-	$.post("${pageContext.request.contextPath}/FundComInfoInitServlet");
-});
+// $(document).ready(function(){
+// 	$.post("${pageContext.request.contextPath}/FundComInfoInitServlet");
+// });
+
+// 页面刷新就执行
+$(function () {
+	// 显示初始的基金公司列表 显示初始的基金收益排行
+	$.post("${pageContext.request.contextPath}/DataInitServlet");
+})
 
 // 自选基金 模态控制
 $(function() {
 	$("#nav-customizeFund-tab").click(function() {
-			var cusPhone = '${cusPhone}';
-			if(cusPhone == "")
-				alert("登陆后才能查看自选基金！");
+			$.post("${pageContext.request.contextPath}/LoginStatusCheckServlet",
+					{
+						postName : "fundSelfChosenSimplied"
+					}, function(data){
+						if(data == "logoutStatus")
+							alert("登陆后才能查看自选基金！");
+					});
 		});
 });
 
+// 个人中心 模态控制
+$(function() {
+	$("#personalCenter").click(function() {
+			$.post("${pageContext.request.contextPath}/LoginStatusCheckServlet",
+					{
+						postName : "personalCenter"
+					}, function(data){
+						if(data == "logoutStatus"){
+							alert("登陆后才能查看个人中心！");
+							$('#loginModalCenter').modal('show');
+						}
+						else{
+							window.open("${pageContext.request.contextPath}/customer/PersonalCenterActionServlet");
+						}
+					});
+		});
+});
+
+// 基金搜索 模态控制
+$(function() {
+	$("#search-fund-button").click(function() {
+		let contentName = $("input[name='search-fund']").val();
+		if(contentName == "" || contentName == null){
+			alert("搜索内容不能为空")
+		}
+		else{
+			$.post("${pageContext.request.contextPath}/SearchServlet",
+					{
+						postName : "searchFund",
+						contentName : contentName
+					}, function(data){
+						if(data == "failed"){
+							alert("没有找到相关结果");
+						}
+						else{
+							var jsonArray = JSON.parse(data);
+							
+							document.getElementById("fund-code").innerHTML = jsonArray["fundCode"];
+							document.getElementById("fund-name").innerHTML = jsonArray["fundName"];
+							document.getElementById("fund-season").innerHTML = jsonArray["fundSeasonYields"] + "%";
+							document.getElementById("fund-year").innerHTML = jsonArray["fundYearYields"] + "%";
+							document.getElementById("fund-type").innerHTML = jsonArray["fundTypeToString"];
+							document.getElementById("fund-buy").innerHTML = jsonArray["fundBuyStatusToString"];
+							document.getElementById("fund-sold").innerHTML = jsonArray["fundSoldStatusToString"];
+
+							$("#fundSearchTipModal").modal('show')
+						}
+					});
+		}	
+		});
+});
+
+//基金公司搜索 模态控制
+$(function() {
+	$("#search-company-button").click(function() {
+		let contentName = $("input[name='search-company']").val();
+		if(contentName == "" || contentName == null){
+			alert("搜索内容不能为空")
+		}
+		else{
+			$.post("${pageContext.request.contextPath}/SearchServlet",
+					{
+						postName : "searchCompany",
+						contentName : contentName
+					}, function(data){
+						if(data == "failed"){
+							alert("没有找到相关结果");
+						}
+						else{
+							var jsonArray = JSON.parse(data);
+							
+							document.getElementById("com-name").innerHTML = jsonArray["comName"];
+							document.getElementById("com-assetManagementScale").innerHTML = jsonArray["assetManagementScale"];
+							document.getElementById("com-fundNum").innerHTML = jsonArray["fundNum"];
+							document.getElementById("com-setupTime").innerHTML = jsonArray["setupTime"];
+							document.getElementById("com-generalManager").innerHTML = jsonArray["generalManager"];
+
+							$("#companySearchTipModal").modal('show')
+						}
+					});
+		}
+		});
+});
+
+//基金经理搜索 模态控制
+$(function() {
+	$("#search-manager-button").click(function() {
+		let contentName = $("input[name='search-manager']").val();
+		if(contentName == "" || contentName == null){
+			alert("搜索内容不能为空")
+		}	
+		else{
+			$.post("${pageContext.request.contextPath}/SearchServlet",
+					{
+						postName : "searchManager",
+						contentName : contentName
+					}, function(data){
+						if(data == "failed"){
+							alert("没有找到相关结果");
+						}
+						else{
+							var jsonArray = JSON.parse(data);
+							
+							document.getElementById("man-name").innerHTML = jsonArray["manName"];
+							document.getElementById("man-workfor").innerHTML = jsonArray["manWorkFor"];
+							document.getElementById("man-ontime").innerHTML = jsonArray["manOnTime"];
+							document.getElementById("man-presentfund").innerHTML = jsonArray["manPresentFund"];
+							document.getElementById("man-arr").innerHTML = jsonArray["manAAR"] + "%";
+							document.getElementById("man-gender").innerHTML = jsonArray["manGender"];
+							document.getElementById("man-eb").innerHTML = jsonArray["manEB"];
+							
+							$("#managerSearchTipModal").modal('show')
+						}
+					});
+		}
+		});
+});
 </script>
 
 <!-- 服务选择部分 -->
@@ -53,16 +180,15 @@ $(function() {
 				</div>
 				<div class="w-100"></div>
 				<div class="col">
-					<a href="" class="serviceList">收益排行</a>
+					<a href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-fund-ranking" class="serviceList" target="_blank">收益排行</a>
 				</div>
 				<div class="col">
-					<a href="" class="serviceList">基金净值</a>
+					<a href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-fund-nav" class="serviceList" target="_blank">基金净值</a>
 				</div>
 				<div class="col">
-					<a href="" class="serviceList">我的自选</a>
+					<a href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-selfchosen" class="serviceList" target="_blank">我的自选</a>
 				</div>
 			</div>
-
 		</div>
 		<div class="col-2">
 			<a href="${pageContext.request.contextPath}/homePage.jsp"> <img
@@ -95,10 +221,10 @@ $(function() {
 					<a href="${pageContext.request.contextPath}/jsp/openAccount.jsp" class="serviceList" target="_blank">基金开户</a>
 				</div>
 				<div class="col">
-					<a href="" class="serviceList">基金交易</a>
+					<a href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-fund-ranking" class="serviceList" target="_blank">基金交易</a>
 				</div>
 				<div class="col">
-					<a href="" class="serviceList">个人中心</a>
+					<a href="#" class="serviceList" id="personalCenter">个人中心</a>
 				</div>
 			</div>
 		</div>
@@ -115,21 +241,37 @@ $(function() {
 			<div class="control-inline" style="width:300px">
 				<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 				  <li class="nav-item">
-				    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-search" role="tab" aria-controls="pills-home" aria-selected="true" style="color: black;">基金</a>
+				    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-search-home" role="tab" aria-controls="pills-home" aria-selected="true" style="color: black;">基金</a>
 				  </li>
 				  <li class="nav-item">
-				    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-search" role="tab" aria-controls="pills-profile" aria-selected="false" style="color: black;">基金公司</a>
+				    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-search-profile" role="tab" aria-controls="pills-profile" aria-selected="false" style="color: black;">基金公司</a>
 				  </li>
 				  <li class="nav-item">
-				    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-search" role="tab" aria-controls="pills-contact" aria-selected="false" style="color: black;">基金经理</a>
+				    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-search-contact" role="tab" aria-controls="pills-contact" aria-selected="false" style="color: black;">基金经理</a>
 				  </li>
 				</ul>
 				<div class="tab-content" id="pills-tabContent">
-				  <div class="tab-pane fade show active" id="pills-search" role="tabpanel" aria-labelledby="pills-home-tab">
+				  <div class="tab-pane fade show active" id="pills-search-home" role="tabpanel" aria-labelledby="pills-home-tab">
 				  	<div class="input-group mb-3">
-					  <input type="text" class="form-control" placeholder="输入要搜索的内容..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+					  <input type="text" class="form-control" placeholder="输入基金名称..." aria-label="Recipient's username" aria-describedby="basic-addon2" name="search-fund">
 					  <div class="input-group-append">
-					    <button class="btn btn-success" type="button">搜索</button>
+					    <button class="btn btn-success" type="button" id="search-fund-button">搜索</button>
+					  </div>
+					</div>
+				  </div>
+				  <div class="tab-pane fade" id="pills-search-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+				  	<div class="input-group mb-3">
+					  <input type="text" class="form-control" placeholder="输入基金公司名称..." aria-label="Recipient's username" aria-describedby="basic-addon2" name="search-company">
+					  <div class="input-group-append">
+					    <button class="btn btn-success" type="button" id="search-company-button">搜索</button>
+					  </div>
+					</div>
+				  </div>
+				  <div class="tab-pane fade" id="pills-search-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+				  	<div class="input-group mb-3">
+					  <input type="text" class="form-control" placeholder="输入基金经理名称..." aria-label="Recipient's username" aria-describedby="basic-addon2" name="search-manager">
+					  <div class="input-group-append">
+					    <button class="btn btn-success" type="button" id="search-manager-button">搜索</button>
 					  </div>
 					</div>
 				  </div>
@@ -146,7 +288,7 @@ $(function() {
 					<h1><span class="badge badge-secondary">TOP</span></h1>
 				</div>
 				<div class="col" style="margin-top:3px;">
-					<a href="" style="text-decoration:none;"><button type="button" class="btn btn-light btn-lg btn-block"><b>优秀基金：</b><span style="color:red;">东方新能源汽车主题混合</span></button></a>
+					<a href="${pageContext.request.contextPath}/FundDetailActionServlet?fundCode=400015" target="_blank" style="text-decoration:none;"><button type="button" class="btn btn-light btn-lg btn-block"><b>优秀基金：</b><span style="color:red;">东方新能源汽车主题混合</span></button></a>
 				</div>	
 			</div>
 		</div>
@@ -155,35 +297,38 @@ $(function() {
 	<hr style="border: none; background: red; height: 3px;">
 	
 	<div class="row">
-		<div class="col-6" style="font-size:12px;">
+		<div class="col-6">
 			<!-- 估值排行 自选基金 -->
 			<nav>
 			  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">估值排行</a>
-			    <a class="nav-item nav-link" id="nav-customizeFund-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">自选基金</a>
+			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">收益排行</a>
+			    <a class="nav-item nav-link" id="nav-customizeFund-tab" data-toggle="tab" href="#customizeFund" role="tab" aria-controls="nav-profile" aria-selected="false">自选基金</a>
 			  </div>
 			</nav>
-			<div class="tab-content" id="nav-tabContent">
+			<div class="tab-content" id="nav-tabContent" style="font-size:12px;">
 			  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 			  	<table class="table table-striped">
 				<thead>
 					<tr>
-						<th scope="col">基金公司名称</th>
-						<th scope="col">估算值</th>
-						<th scope="col">估算增长率</th>
+						<th scope="col">基金名称</th>
+						<th scope="col">季收益率</th>
+						<th scope="col">年收益率</th>
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${allComs }" var="item">
+					<c:forEach items="${fundsCut }" var="item">
 					<tr>
-						<td>${item.comName }</td>
-						<th scope="row">${item.assetManagementScale }</th>
+						<td>${item.fundName }</td>
+						<th scope="row" style="color:red;">${item.fundSeasonYields }%</th>
+						<th scope="row" style="color:red;">${item.fundYearYields }%</th>
 					</tr>
 					</c:forEach>
 				</tbody>
 			</table>
 			  </div>
-			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
+			  <div class="tab-pane fade" id="customizeFund" role="tabpanel" aria-labelledby="nav-profile-tab">
+			  Nothing is here
+			  </div>
 			</div>
 		</div>
 		<div class="col-6">
@@ -223,10 +368,10 @@ $(function() {
 			  <div class="card-body">
 			  	<div class="row">
 			  		<div class="col-6">
-			  			<a href="#" class="btn btn-danger btn-lg btn-block" style="height:70px;"><b>免费开户</b><br><span style="font-size:12px;">8秒开户</span></a>
+			  			<a href="${pageContext.request.contextPath}/jsp/openAccount.jsp" target="_blank" class="btn btn-danger btn-lg btn-block" style="height:70px;"><b>免费开户</b><br><span style="font-size:12px;">8秒开户</span></a>
 			  		</div>
 			  		<div class="col-6">
-			  			<a href="#" class="btn btn-primary btn-lg btn-block" style="height:70px;"><b>基金交易</b><br><span style="font-size:12px;">全场一折</span></a>
+			  			<a href="${pageContext.request.contextPath}/DataTypeChooseServlet?type=pills-fund-ranking" class="btn btn-primary btn-lg btn-block" style="height:70px;" target="_blank"><b>基金交易</b><br><span style="font-size:12px;">全场一折</span></a>
 			  		</div>
 			  	</div>
 		  		
@@ -351,6 +496,131 @@ $(function() {
       </div>
       <div class="modal-body">
         功能尚在开发当中，敬请期待！
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 基金搜索提示 Modal -->
+<div class="modal fade" id="fundSearchTipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">查询结果</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<table class="table" style="font-size:12px;">
+		  <thead>
+		    <tr>
+		      <th scope="col">代码</th>
+		      <th scope="col">名称</th>
+		      <th scope="col">季收益</th>
+		      <th scope="col">年收益</th>
+		      <th scope="col">类型</th>
+		      <th scope="col">申购</th>
+		      <th scope="col">赎回</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+	      	  <td id="fund-code"></td>
+		      <td id="fund-name"></td>
+		      <td id="fund-season"></td>
+		      <td id="fund-year"></td>
+		      <td id="fund-type"></td>
+		      <td id="fund-buy"></td>
+		      <td id="fund-sold"></td>
+		    </tr>
+		  </tbody>
+		</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 基金公司搜索提示 Modal -->
+<div class="modal fade" id="companySearchTipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">查询结果</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<table class="table" style="font-size:12px;">
+		  <thead>
+		    <tr>
+		      <th scope="col">公司名称</th>
+		      <th scope="col">管理规模(亿元)</th>
+		      <th scope="col">基金数</th>
+		      <th scope="col">成立时间</th>
+		      <th scope="col">总经理</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		    	<td id="com-name"></td>
+				<td id="com-assetManagementScale"></td>
+				<td id="com-fundNum"></td>
+				<td id="com-setupTime"></td>
+				<td id="com-generalManager"></td>
+		    </tr>
+		  </tbody>
+		</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 基金经理搜索提示 Modal -->
+<div class="modal fade" id="managerSearchTipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">查询结果</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<table class="table" style="font-size:8px;">
+		  <thead>
+		    <tr>
+		      <th scope="col">姓名</th>
+		      <th scope="col">任职基金公司</th>
+		      <th scope="col">上任日期</th>
+		      <th scope="col">现任基金</th>
+		      <th scope="col">平均年化收益</th>
+		      <th scope="col">性别</th>
+		      <th scope="col">学历</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		    	<td id="man-name"></td>
+				<td id="man-workfor"></td>
+				<td id="man-ontime"></td>
+				<td id="man-presentfund"></td>
+				<td id="man-arr"></td>
+				<td id="man-gender"></td>
+				<td id="man-eb"></td>
+		    </tr>
+		  </tbody>
+		</table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
