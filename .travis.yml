@@ -1,0 +1,33 @@
+language: java
+ant test
+
+jdk:
+  - openjdk8
+
+cache:
+  directories:
+    - node_modules #缓存依赖
+
+script:
+  - npm run build
+
+#after_script前5句是把部署分支的.git文件夹保护起来，用于保留历史部署的commit日志，否则部署分支永远只有一条commit记录。
+#命令里面的变量都是在Travis CI里配置过的。
+after_script:
+  - cd ./public
+  - git init
+  - git config user.name "JinLi"
+  - git config user.email "1015602635@qq.com"
+  - git add .
+  - git commit -m ":JinLi Construction"
+  - git push --force --quiet "https://${JinLi}@${GH_REF}" master:ant_test
+# E: Build LifeCycle
+
+# 只有指定的分支提交时才会运行脚本
+branches:
+  only:
+    - master
+
+env:
+  global:
+    - GH_REF: github.com/Beery-unter/JinLiFund.git
