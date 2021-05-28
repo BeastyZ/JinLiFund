@@ -1,4 +1,5 @@
 language: java
+install: ant deps
 
 jdk:
   - openjdk8
@@ -6,9 +7,6 @@ jdk:
 cache:
   directories:
     - node_modules #缓存依赖
-
-install:
-  - npm install
 
 script:
   - npm run build
@@ -22,7 +20,7 @@ after_script:
   - git config user.email "1015602635@qq.com"
   - git add .
   - git commit -m ":JinLi Construction"
-  - git push --force --quiet "https://${JinLi}@${GH_REF}" master:stravis
+  - git push --force --quiet "https://${JinLi}@${GH_REF}" master:ant_test
 # E: Build LifeCycle
 
 # 只有指定的分支提交时才会运行脚本
